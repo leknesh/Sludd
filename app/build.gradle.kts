@@ -57,8 +57,6 @@ android {
         implementation(libs.retrofit2.kotlinx.serialization.converter)
         implementation(libs.kotlinx.serialization.json)
 
-        // Koin for Android
-        implementation(libs.koin.androidx.compose)
 
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit)
