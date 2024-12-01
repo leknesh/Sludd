@@ -41,6 +41,8 @@ data class CurrentWeatherResponse(
 )
 
 data class CurrentWeather(
+    val latitude: Double,
+    val longitude: Double,
     val temperature: String,
     val humidity: String,
     val windSpeed: String,
@@ -52,6 +54,8 @@ data class CurrentWeather(
 fun WeatherResponse.toCurrentWeather(): CurrentWeather {
     val weatherCode = WeatherCode.fromCode(this.currentWeather.weatherCode)
     return CurrentWeather(
+        latitude = latitude,
+        longitude = longitude,
         temperature = "${currentWeather.temperature} ${currentWeatherUnits.temperatureUnit}",
         humidity = "${currentWeather.humidity} ${currentWeatherUnits.humidityUnit}",
         windSpeed = "${currentWeather.windSpeed} ${currentWeatherUnits.windSpeedUnit}",

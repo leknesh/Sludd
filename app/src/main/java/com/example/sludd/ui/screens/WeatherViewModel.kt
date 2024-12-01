@@ -9,21 +9,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.sludd.data.CurrentWeather
 import com.example.sludd.data.WeatherRepository
 import com.example.sludd.data.toCurrentWeather
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.example.sludd.location.LocationProvider
 import kotlinx.coroutines.launch
 
-private val osloDefaultState = LocationState(59.91, 10.75)
-
 class WeatherViewModel(
-    private val weatherRepository: WeatherRepository
+    private val weatherRepository: WeatherRepository,
+    private val locationProvider: LocationProvider
 ) : ViewModel() {
+
+    private val osloLat = 59.91
+    private val osloLong = 10.75
 
     var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
         private set
-
-    private val _locationState = MutableStateFlow(LocationState())
-    val locationState: StateFlow<LocationState> = _locationState
 
     fun updateWeather() {
         getCurrentWeather()
@@ -32,7 +30,13 @@ class WeatherViewModel(
     private fun getCurrentWeather() {
         viewModelScope.launch {
             uiState = try {
-                val response = weatherRepository.getCurrentWeather(23.35, 2.43)
+                val location = locationProvider.getCurrentLocation()
+                val response = if (location != null) {
+                    weatherRepository.getCurrentWeather(location.latitude, location.longitude)
+                } else {
+                    weatherRepository.getCurrentWeather(osloLat, osloLong)
+                }
+
                 val currentWeather = response.toCurrentWeather()
                 WeatherUiState.Loaded(result = currentWeather)
             } catch (e: Exception) {
@@ -41,20 +45,7 @@ class WeatherViewModel(
             }
         }
     }
-
-    fun getLocation() {
-        _locationState.value = osloDefaultState
-    }
-
-    fun updateLocation(lat: Double, long: Double) {
-        _locationState.value = LocationState(lat, long)
-    }
 }
-
-data class LocationState (
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0
-)
 
 sealed interface WeatherUiState {
     data class Loaded(val result: CurrentWeather?) : WeatherUiState
