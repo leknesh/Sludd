@@ -1,6 +1,5 @@
 package com.example.sludd.ui.composables
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -18,13 +17,9 @@ fun WeatherCardView(modifier: Modifier = Modifier, content: @Composable () -> Un
 @Composable
 fun CardView(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Card(
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         shape = RoundedCornerShape(16.dp),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            content()
-        }
+        content()
     }
 }

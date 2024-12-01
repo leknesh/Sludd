@@ -45,44 +45,18 @@ data class CurrentWeather(
     val humidity: String,
     val windSpeed: String,
 //    val windDirection: String,
-    val description: String
+    val description: String,
+    val icon: Int
 )
 
 fun WeatherResponse.toCurrentWeather(): CurrentWeather {
+    val weatherCode = WeatherCode.fromCode(this.currentWeather.weatherCode)
     return CurrentWeather(
         temperature = "${currentWeather.temperature} ${currentWeatherUnits.temperatureUnit}",
         humidity = "${currentWeather.humidity} ${currentWeatherUnits.humidityUnit}",
         windSpeed = "${currentWeather.windSpeed} ${currentWeatherUnits.windSpeedUnit}",
 //        windDirection = "${currentWeather.winddirection} ${currentWeatherUnits.winddirection}",
-        description = WeatherCode.fromCode(this.currentWeather.weatherCode).description
+        description = weatherCode.description,
+        icon = weatherCode.getDrawable()
     )
 }
-
-// response example:
-//
-//{
-//    "latitude": 52.52,
-//    "longitude": 13.419998,
-//    "generationtime_ms": 0.059962272644043,
-//    "utc_offset_seconds": 3600,
-//    "timezone": "Europe/Berlin",
-//    "timezone_abbreviation": "CET",
-//    "elevation": 38,
-//    "current_units": {
-//    "time": "iso8601",
-//    "interval": "seconds",
-//    "temperature_2m": "°C",
-//    "relative_humidity_2m": "%",
-//    "weather_code": "wmo code",
-//    "wind_speed_10m": "km/h"
-//},
-//    "current": {
-//    "time": "2024-12-01T12:30",
-//    "interval": 900,
-//    "temperature_2m": 2.1,
-//    "relative_humidity_2m": 77,
-//    "weather_code": 0,
-//    "wind_speed_10m": 6.8
-//}
-//
-//{"latitude":52.52,"longitude":13.419998,"generationtime_ms":0.03600120544433594,"utc_offset_seconds":0,"timezone":"GMT","timezone_abbreviation":"GMT","elevation":38.0,"current_weather_units":{"time":"iso8601","interval":"seconds","temperature":"°C","windspeed":"km/h","winddirection":"°","is_day":"","weathercode":"wmo code"},"current_weather":{"time":"2024-12-01T11:30","interval":900,"temperature":2.1,"windspeed":6.8,"winddirection":155,"is_day":1,"weathercode":0}}

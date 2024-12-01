@@ -23,14 +23,12 @@ class WeatherViewModel : ViewModel() {
     private fun getCurrentWeather() {
         viewModelScope.launch {
             uiState = try {
-                val response = WeatherApiManager.getCurrentWeather(52.52, 13.41)
-                Log.d("WeatherTag", "Response: $response")
+                val response = WeatherApiManager.getCurrentWeather(23.35, 2.43)
                 val currentWeather = response.toCurrentWeather()
-                Log.d("WeatherTag", "Got currentweather: $currentWeather")
                 WeatherUiState.Loaded(result = currentWeather)
             } catch (e: Exception) {
                 Log.d("WeatherTag", "Loaderror: $e")
-                WeatherUiState.Error
+                WeatherUiState.Error(e.message ?: "An error occurred")
             }
         }
     }
@@ -38,6 +36,6 @@ class WeatherViewModel : ViewModel() {
 
 sealed interface WeatherUiState {
     data class Loaded(val result: CurrentWeather?) : WeatherUiState
-    object Error : WeatherUiState
+    data class Error(val message: String) : WeatherUiState
     object Loading : WeatherUiState
 }

@@ -1,5 +1,7 @@
 package com.example.sludd.data
 
+import com.example.sludd.R
+
 // Sealed class used to allow for extending with other params, like icons
 sealed class WeatherCode(val code: Int, val description: String) {
     object ClearSky : WeatherCode(0, "Clear Sky")
@@ -45,5 +47,40 @@ sealed class WeatherCode(val code: Int, val description: String) {
             RainShowersViolent, SnowShowersSlight, SnowShowersHeavy, ThunderstormSlight,
             ThunderstormSlightHail, ThunderstormHeavyHail, Unknown
         )
+    }
+}
+
+fun WeatherCode.getDrawable() : Int {
+    return when(this) {
+        WeatherCode.ClearSky,
+        WeatherCode.MainlyClear,
+        WeatherCode.PartlyCloudy,
+            -> R.drawable.baseline_sunny_24
+        WeatherCode.Overcast,
+        WeatherCode.Fog,
+        WeatherCode.DepositingRimeFog -> R.drawable.baseline_cloud_24
+        WeatherCode.DrizzleLight,
+        WeatherCode.DrizzleModerate,
+        WeatherCode.DrizzleDense -> R.drawable.baseline_water_drop_24
+        WeatherCode.FreezingDrizzle,
+        WeatherCode.FreezingDrizzleDense -> R.drawable.outline_cloudy_snowing_24
+        WeatherCode.RainSlight,
+        WeatherCode.RainModerate,
+        WeatherCode.RainHeavy -> R.drawable.baseline_water_drop_24
+        WeatherCode.FreezingRainLight,
+        WeatherCode.FreezingRainHeavy,
+        WeatherCode.SnowFallSlight,
+        WeatherCode.SnowFallModerate,
+        WeatherCode.SnowFallHeavy,
+        WeatherCode.SnowGrains -> R.drawable.outline_cloudy_snowing_24
+        WeatherCode.RainShowersSlight,
+        WeatherCode.RainShowersModerate,
+        WeatherCode.RainShowersViolent,
+        WeatherCode.SnowShowersSlight,
+        WeatherCode.SnowShowersHeavy -> R.drawable.baseline_water_drop_24
+        WeatherCode.ThunderstormSlight,
+        WeatherCode.ThunderstormSlightHail,
+        WeatherCode.ThunderstormHeavyHail -> R.drawable.baseline_bolt_24
+        WeatherCode.Unknown -> R.drawable.baseline_error_24
     }
 }

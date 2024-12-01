@@ -5,21 +5,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.sludd.R
 import com.example.sludd.data.CurrentWeather
@@ -39,7 +42,7 @@ fun WeatherScreen(
                 modifier.padding(top = contentPadding.calculateTopPadding())
             )
 
-            is WeatherUiState.Error -> ErrorScreen(modifier)
+            is WeatherUiState.Error -> ErrorScreen(modifier, weatherUiState.message)
         }
     }
 }
@@ -47,20 +50,47 @@ fun WeatherScreen(
 @Composable
 fun ResultScreen(weather: CurrentWeather?, modifier: Modifier = Modifier) {
     WeatherCardView {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
+        ) {
             Spacer(Modifier.height(16.dp))
-            Text(text = "Current weather")
-            Text(text = "${weather?.temperature}")
-            Text(text = "${weather?.humidity}")
-            Text(text = "${weather?.windSpeed}")
-            Text(text = "${weather?.description}")
+            Text(
+                text = "Current Weather",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = weather?.icon ?: R.drawable.baseline_error_24),
+                    contentDescription = "weather icon",
+                    modifier = Modifier.size(48.dp)
+                )
+                Spacer(Modifier.width(16.dp))
+                Column {
+                    Text(text = weather?.description ?: "N/A", style = MaterialTheme.typography.labelMedium)
+                    Text(text = weather?.temperature ?: "N/A", style = MaterialTheme.typography.headlineMedium)
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Humidity: ${weather?.humidity ?: "N/A"}", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "Wind Speed: ${weather?.windSpeed ?: "N/A"}", style = MaterialTheme.typography.bodyMedium)
+            }
             Spacer(Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
-fun ErrorScreen(modifier: Modifier) {
+fun ErrorScreen(modifier: Modifier, message: String) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -71,7 +101,7 @@ fun ErrorScreen(modifier: Modifier) {
             contentDescription = "error"
         )
         Text(
-            text = stringResource(R.string.network_error),
+            text = message,
             modifier = Modifier.padding(16.dp)
         )
     }
