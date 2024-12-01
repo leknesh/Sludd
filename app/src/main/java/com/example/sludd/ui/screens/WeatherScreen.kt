@@ -51,8 +51,8 @@ fun ResultScreen(weather: CurrentWeather?, modifier: Modifier = Modifier) {
             Spacer(Modifier.height(16.dp))
             Text(text = "Current weather")
             Text(text = "${weather?.temperature}")
+            Text(text = "${weather?.humidity}")
             Text(text = "${weather?.windSpeed}")
-            Text(text = "${weather?.windDirection}")
             Text(text = "${weather?.description}")
             Spacer(Modifier.height(16.dp))
         }

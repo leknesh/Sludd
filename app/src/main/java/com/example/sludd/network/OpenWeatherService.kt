@@ -10,7 +10,7 @@ const val CURRENT_PARAMS = "temperature_2m,relative_humidity_2m,weather_code,win
 //const val FORECAST_PARAMS = "temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m"
 
 interface OpenWeatherService {
-    @GET("forecast?current_weather=true")
+    @GET("forecast")
     suspend fun getCurrentWeather(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,

@@ -10,52 +10,51 @@ data class WeatherResponse(
     val timezone: String,
     @SerializedName("timezone_abbreviation") val timezoneAbbreviation: String,
     val elevation: Double,
-    @SerializedName("current_weather_units") val currentWeatherUnits: WeatherUnitsResponse,
-    @SerializedName("current_weather") val currentWeather: CurrentWeatherResponse
+    @SerializedName("current_units") val currentWeatherUnits: WeatherUnitsResponse,
+    @SerializedName("current") val currentWeather: CurrentWeatherResponse
 )
 
 data class WeatherUnitsResponse(
     val time: String,
     val interval: String,
-    val temperature: String,
-    val windspeed: String,
-    val winddirection: String,
-    val weatherCodeUnit : String
-//    @SerializedName("temperature_2m") val temperatureUnit: String,
-//    @SerializedName("relative_humidity_2m") val humidityUnit : String,
-//    @SerializedName("wind_speed_10m") val windSpeedUnit: String,
-//    @SerializedName("weather_code") val weatherCodeUnit : String
+//    val temperature: String,
+//    val windspeed: String,
+//    val winddirection: String,
+//    val weatherCodeUnit : String
+    @SerializedName("temperature_2m") val temperatureUnit: String,
+    @SerializedName("relative_humidity_2m") val humidityUnit : String,
+    @SerializedName("wind_speed_10m") val windSpeedUnit: String,
+    @SerializedName("weather_code") val weatherCodeUnit : String
 )
 
 data class CurrentWeatherResponse(
     val time: String,
     val interval: Int,
-    val temperature: Double,
-    val windspeed: Double,
-    val winddirection: Int,
-    val weathercode : Int
-
-//    @SerializedName("temperature_2m") val temperature: Double,
-//    @SerializedName("relative_humidity_2m") val humidity : Int,
-//    @SerializedName("wind_speed_10m") val windSpeed: Double,
-//    @SerializedName("weather_code") val weatherCode : Int
+//    val temperature: Double,
+//    val windspeed: Double,
+//    val winddirection: Int,
+//    val weathercode : Int
+    @SerializedName("temperature_2m") val temperature: Double,
+    @SerializedName("relative_humidity_2m") val humidity : Int,
+    @SerializedName("wind_speed_10m") val windSpeed: Double,
+    @SerializedName("weather_code") val weatherCode : Int
 )
 
 data class CurrentWeather(
     val temperature: String,
-//    val humidity: String,
+    val humidity: String,
     val windSpeed: String,
-    val windDirection: String,
+//    val windDirection: String,
     val description: String
 )
 
 fun WeatherResponse.toCurrentWeather(): CurrentWeather {
     return CurrentWeather(
-        temperature = "${currentWeather.temperature} ${currentWeatherUnits.temperature}",
-//        humidity = "${currentWeather.humidity} ${currentWeatherUnits.humidityUnit}",
-        windSpeed = "${currentWeather.windspeed} ${currentWeatherUnits.windspeed}",
-        windDirection = "${currentWeather.winddirection} ${currentWeatherUnits.winddirection}",
-        description = WeatherCode.fromCode(this.currentWeather.weathercode).description
+        temperature = "${currentWeather.temperature} ${currentWeatherUnits.temperatureUnit}",
+        humidity = "${currentWeather.humidity} ${currentWeatherUnits.humidityUnit}",
+        windSpeed = "${currentWeather.windSpeed} ${currentWeatherUnits.windSpeedUnit}",
+//        windDirection = "${currentWeather.winddirection} ${currentWeatherUnits.winddirection}",
+        description = WeatherCode.fromCode(this.currentWeather.weatherCode).description
     )
 }
 
