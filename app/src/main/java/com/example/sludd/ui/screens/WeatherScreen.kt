@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.sludd.R
-import com.example.sludd.network.WeatherInfo
+import com.example.sludd.data.CurrentWeather
 import com.example.sludd.ui.composables.WeatherCardView
 
 @Composable
@@ -45,14 +45,15 @@ fun WeatherScreen(
 }
 
 @Composable
-fun ResultScreen(result: WeatherInfo?, modifier: Modifier = Modifier) {
+fun ResultScreen(weather: CurrentWeather?, modifier: Modifier = Modifier) {
     WeatherCardView {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Spacer(Modifier.height(16.dp))
             Text(text = "Current weather")
-            Text(text = "${result?.humidity}")
-            Text(text = "${result?.windSpeed}")
-            Text(text = "${result?.temperature}")
+            Text(text = "${weather?.temperature}")
+            Text(text = "${weather?.windSpeed}")
+            Text(text = "${weather?.windDirection}")
+            Text(text = "${weather?.description}")
             Spacer(Modifier.height(16.dp))
         }
     }

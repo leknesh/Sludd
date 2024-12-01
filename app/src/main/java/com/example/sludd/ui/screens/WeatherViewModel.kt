@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sludd.network.RetrofitInstance
-import com.example.sludd.network.WeatherInfo
-import com.example.sludd.network.extractCurrentWeatherInfo
+import com.example.sludd.data.CurrentWeather
+import com.example.sludd.data.toCurrentWeather
+import com.example.sludd.network.WeatherApiManager
 import kotlinx.coroutines.launch
 
 class WeatherViewModel : ViewModel() {
@@ -23,12 +23,13 @@ class WeatherViewModel : ViewModel() {
     private fun getCurrentWeather() {
         viewModelScope.launch {
             uiState = try {
-                val response = RetrofitInstance.api.getCurrentWeather(latitude = 59.8, longitude = 10.0)
-                val weatherInfo = extractCurrentWeatherInfo(response)
-                Log.d("Weather", "Got weather: $response")
-                WeatherUiState.Loaded(result = weatherInfo)
+                val response = WeatherApiManager.getCurrentWeather(52.52, 13.41)
+                Log.d("WeatherTag", "Response: $response")
+                val currentWeather = response.toCurrentWeather()
+                Log.d("WeatherTag", "Got currentweather: $currentWeather")
+                WeatherUiState.Loaded(result = currentWeather)
             } catch (e: Exception) {
-                Log.d("Weather", "Loaderror: $e")
+                Log.d("WeatherTag", "Loaderror: $e")
                 WeatherUiState.Error
             }
         }
@@ -36,7 +37,7 @@ class WeatherViewModel : ViewModel() {
 }
 
 sealed interface WeatherUiState {
-    data class Loaded(val result: WeatherInfo?) : WeatherUiState
+    data class Loaded(val result: CurrentWeather?) : WeatherUiState
     object Error : WeatherUiState
     object Loading : WeatherUiState
 }

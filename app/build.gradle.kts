@@ -57,6 +57,7 @@ android {
         implementation(libs.retrofit2.kotlinx.serialization.converter)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.retrofit2.converter.gson)
+        implementation(libs.logging.interceptor)
 
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit)
