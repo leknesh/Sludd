@@ -15,6 +15,7 @@ Sludd is a weather application built using Kotlin and Jetpack Compose. It fetche
 - Retrofit
 - OkHttp
 - Gson
+- Koin
 - Android Studio
 
 ## Getting Started
@@ -53,3 +54,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Retrofit](https://square.github.io/retrofit/)
 - [OkHttp](https://square.github.io/okhttp/)
 - [Gson](https://github.com/google/gson)
+- [Koin](https://insert-koin.io/)
