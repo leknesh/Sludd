@@ -1,7 +1,6 @@
 [versions]
 converterGsonVersion = "2.11.0"
 koinAndroid = "4.1.0-Beta1"
-kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -14,7 +13,6 @@ loggingInterceptor = "4.12.0"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
-compose = "1.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
