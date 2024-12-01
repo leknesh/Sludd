@@ -49,42 +49,62 @@ fun WeatherScreen(
 
 @Composable
 fun ResultScreen(weather: CurrentWeather?, modifier: Modifier = Modifier) {
-    WeatherCardView {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            Spacer(Modifier.height(16.dp))
-            Text(
-                text = "Current Weather",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
+    Column (modifier = modifier) {
+        WeatherCardView {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = weather?.icon ?: R.drawable.baseline_error_24),
-                    contentDescription = "weather icon",
-                    modifier = Modifier.size(48.dp)
+                Text(
+                    text = "Current Weather",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
-                Spacer(Modifier.width(16.dp))
-                Column {
-                    Text(text = weather?.description ?: "N/A", style = MaterialTheme.typography.labelMedium)
-                    Text(text = weather?.temperature ?: "N/A", style = MaterialTheme.typography.headlineMedium)
+                Text(
+                    text = "Location: ${weather?.latitude ?: "N/A"}, ${weather?.longitude ?: "N/A"}",
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            id = weather?.icon ?: R.drawable.baseline_error_24
+                        ),
+                        contentDescription = "weather icon",
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column {
+                        Text(
+                            text = weather?.description ?: "N/A",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        Text(
+                            text = weather?.temperature ?: "N/A",
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+                    }
                 }
+                Spacer(Modifier.height(16.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Humidity: ${weather?.humidity ?: "N/A"}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Wind Speed: ${weather?.windSpeed ?: "N/A"}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
             }
-            Spacer(Modifier.height(16.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Humidity: ${weather?.humidity ?: "N/A"}", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "Wind Speed: ${weather?.windSpeed ?: "N/A"}", style = MaterialTheme.typography.bodyMedium)
-            }
-            Spacer(Modifier.height(16.dp))
         }
     }
 }
