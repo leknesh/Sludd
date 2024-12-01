@@ -2,11 +2,16 @@ package com.example.sludd.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.sludd.R
+import com.example.sludd.network.WeatherInfo
 import com.example.sludd.ui.composables.WeatherCardView
 
 @Composable
@@ -25,21 +31,30 @@ fun WeatherScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    when (weatherUiState) {
-        is WeatherUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
-        is WeatherUiState.Loaded -> ResultScreen(
-            weatherUiState.result,
-            modifier.padding(top = contentPadding.calculateTopPadding())
-        )
+    Box(modifier = modifier.fillMaxSize()) {
+        when (weatherUiState) {
+            is WeatherUiState.Loading -> LoadingScreen(modifier)
+            is WeatherUiState.Loaded -> ResultScreen(
+                weatherUiState.result,
+                modifier.padding(top = contentPadding.calculateTopPadding())
+            )
 
-        is WeatherUiState.Error -> ErrorScreen(modifier = modifier.fillMaxSize())
+            is WeatherUiState.Error -> ErrorScreen(modifier)
+        }
     }
 }
 
 @Composable
-fun ResultScreen(result: String, padding: Modifier) {
-    WeatherCardView(modifier = Modifier) {
-
+fun ResultScreen(result: WeatherInfo?, modifier: Modifier = Modifier) {
+    WeatherCardView {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Spacer(Modifier.height(16.dp))
+            Text(text = "Current weather")
+            Text(text = "${result?.humidity}")
+            Text(text = "${result?.windSpeed}")
+            Text(text = "${result?.temperature}")
+            Spacer(Modifier.height(16.dp))
+        }
     }
 }
 
@@ -63,12 +78,15 @@ fun ErrorScreen(modifier: Modifier) {
 
 @Composable
 fun LoadingScreen(modifier: Modifier) {
-    CircularProgressIndicator(
-        modifier = Modifier.width(64.dp),
-        color = MaterialTheme.colorScheme.secondary,
-        trackColor = MaterialTheme.colorScheme.surfaceVariant
+    Box(modifier = modifier.fillMaxSize(1f),
+        contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(
+            modifier = Modifier.width(64.dp),
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
 
-    )
+        )
+    }
 }
 
 

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Sludd</string>
     <string name="network_error">Error loading weather forecast!</string>
+    <string name="current_weather">Current weather\n</string>
 </resources>

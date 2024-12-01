@@ -10,12 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.sludd.ui.composables.WeatherCardView
 import com.example.sludd.ui.screens.WeatherScreen
 import com.example.sludd.ui.screens.WeatherViewModel
 import com.example.sludd.ui.theme.SluddTheme
@@ -34,29 +29,11 @@ class MainActivity : ComponentActivity() {
                         .background(MaterialTheme.colorScheme.background)
                 ) { innerPadding ->
                     WeatherScreen(
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = Modifier.fillMaxSize().padding(innerPadding),
                         weatherUiState = weatherViewModel.uiState
                     )
                 }
             }
         }
-    }
-
-
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SluddTheme {
-        Greeting("Android")
     }
 }
