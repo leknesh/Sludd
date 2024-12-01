@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 const val CURRENT_PARAMS = "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m"
 
-interface OpenWeatherService {
+interface WeatherApiService {
     @GET("forecast")
     suspend fun getCurrentWeather(
         @Query("latitude") latitude: Double,

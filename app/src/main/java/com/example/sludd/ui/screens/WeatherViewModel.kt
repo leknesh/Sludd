@@ -7,15 +7,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sludd.data.CurrentWeather
+import com.example.sludd.data.WeatherRepository
 import com.example.sludd.data.toCurrentWeather
-import com.example.sludd.network.WeatherApiManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 private val osloDefaultState = LocationState(59.91, 10.75)
 
-class WeatherViewModel : ViewModel() {
+class WeatherViewModel(
+    private val weatherRepository: WeatherRepository
+) : ViewModel() {
 
     var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
         private set
@@ -30,7 +32,7 @@ class WeatherViewModel : ViewModel() {
     private fun getCurrentWeather() {
         viewModelScope.launch {
             uiState = try {
-                val response = WeatherApiManager.getCurrentWeather(23.35, 2.43)
+                val response = weatherRepository.getCurrentWeather(23.35, 2.43)
                 val currentWeather = response.toCurrentWeather()
                 WeatherUiState.Loaded(result = currentWeather)
             } catch (e: Exception) {

@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 private const val BASE_URL = "https://api.open-meteo.com/v1/"
 
-object WeatherApiManager {
+object WeatherApiClient {
 
     private val retrofit: Retrofit by lazy {
         val interceptor = HttpLoggingInterceptor().apply {
@@ -25,12 +25,7 @@ object WeatherApiManager {
             .build()
     }
 
-    private val weatherService: OpenWeatherService by lazy {
-        retrofit.create(OpenWeatherService::class.java)
+    val apiService: WeatherApiService by lazy {
+        retrofit.create(WeatherApiService::class.java)
     }
-
-    fun getInstance(): OpenWeatherService = weatherService
-
-    suspend fun getCurrentWeather(latitude: Double, longitude: Double) =
-        weatherService.getCurrentWeather(latitude, longitude)
 }
