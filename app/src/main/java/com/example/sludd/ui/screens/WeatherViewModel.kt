@@ -23,29 +23,38 @@ class WeatherViewModel(
     var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
         private set
 
-    fun updateWeather() {
-        getCurrentWeather()
+    // Oslo used as default location
+    var locationState: LocationState by mutableStateOf(LocationState(osloLat, osloLong))
+        private set
+
+    fun updateLocation() {
+        viewModelScope.launch {
+            try {
+                val location = locationProvider.getCurrentLocation()
+                if (location != null) {
+                    locationState = LocationState(location.latitude, location.longitude)
+                }
+            } catch (e: Exception) {
+                Log.d("WeatherTag", "Location error: $e")
+            }
+        }
     }
 
-    private fun getCurrentWeather() {
+    fun updateWeather() {
         viewModelScope.launch {
             uiState = try {
-                val location = locationProvider.getCurrentLocation()
-                val response = if (location != null) {
-                    weatherRepository.getCurrentWeather(location.latitude, location.longitude)
-                } else {
-                    weatherRepository.getCurrentWeather(osloLat, osloLong)
-                }
-
+                val response = weatherRepository.getCurrentWeather(locationState.latitude, locationState.longitude)
                 val currentWeather = response.toCurrentWeather()
                 WeatherUiState.Loaded(result = currentWeather)
             } catch (e: Exception) {
-                Log.d("WeatherTag", "Loaderror: $e")
+                Log.d("WeatherTag", "Load error: $e")
                 WeatherUiState.Error(e.message ?: "An error occurred")
             }
         }
     }
 }
+
+data class LocationState(val latitude: Double, val longitude: Double)
 
 sealed interface WeatherUiState {
     data class Loaded(val result: CurrentWeather?) : WeatherUiState

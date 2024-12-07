@@ -59,7 +59,9 @@ android {
         implementation(libs.retrofit2.converter.gson)
         implementation(libs.logging.interceptor)
 
-        implementation(libs.koin.android)
+        implementation(libs.accompanist.permissions)
+
+        implementation(libs.koin.androidx.compose)
 
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit)
