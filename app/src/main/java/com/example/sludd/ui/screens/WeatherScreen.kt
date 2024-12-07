@@ -25,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.sludd.R
-import com.example.sludd.data.CurrentWeather
+import com.example.sludd.data.WeatherInfo
+import com.example.sludd.data.ForecastWeather
+import com.example.sludd.data.getDrawable
 import com.example.sludd.ui.composables.WeatherCardView
 
 @Composable
@@ -38,7 +40,7 @@ fun WeatherScreen(
         when (weatherUiState) {
             is WeatherUiState.Loading -> LoadingScreen(modifier)
             is WeatherUiState.Loaded -> ResultScreen(
-                weatherUiState.result,
+                weatherUiState.current,
                 modifier.padding(top = contentPadding.calculateTopPadding())
             )
 
@@ -48,66 +50,22 @@ fun WeatherScreen(
 }
 
 @Composable
-fun ResultScreen(weather: CurrentWeather?, modifier: Modifier = Modifier) {
+fun ResultScreen(
+    weather: WeatherInfo,
+    modifier: Modifier = Modifier
+) {
     Column (modifier = modifier) {
         WeatherCardView {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Current Weather",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                Text(
-                    text = "Location: ${weather?.latitude ?: "N/A"}, ${weather?.longitude ?: "N/A"}",
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            id = weather?.icon ?: R.drawable.baseline_error_24
-                        ),
-                        contentDescription = "weather icon",
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Spacer(Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            text = weather?.description ?: "N/A",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Text(
-                            text = weather?.temperature ?: "N/A",
-                            style = MaterialTheme.typography.headlineMedium
-                        )
-                    }
-                }
-                Spacer(Modifier.height(16.dp))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Humidity: ${weather?.humidity ?: "N/A"}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = "Wind Speed: ${weather?.windSpeed ?: "N/A"}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Spacer(Modifier.height(16.dp))
+            CurrentWeather(weather)
+        }
+        weather.foreCast.forEach {
+            WeatherCardView {
+               SingleDayWeather(it)
             }
         }
     }
 }
+
 
 @Composable
 fun ErrorScreen(modifier: Modifier, message: String) {
@@ -140,4 +98,94 @@ fun LoadingScreen(modifier: Modifier) {
     }
 }
 
+@Composable
+fun CurrentWeather(weather: WeatherInfo) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Current Weather",
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        Text(
+            text = "Location: ${weather.latitude}, ${weather.longitude}",
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ) {
+            Icon(
+                painter = painterResource(
+                    id = weather.currentWeather.weatherCode.getDrawable()
+                ),
+                contentDescription = "weather icon",
+                modifier = Modifier.size(48.dp)
+            )
+            Spacer(Modifier.width(16.dp))
+            Column {
+                Text(
+                    text = weather.currentWeather.weatherCode.description,
+                    style = MaterialTheme.typography.labelMedium
+                )
+                Text(
+                    text = weather.currentWeather.temperature,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Humidity: ${weather.currentWeather.humidity}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Wind Speed: ${weather.currentWeather.windSpeed}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+    }
+}
 
+@Composable
+fun SingleDayWeather(forecastWeather: ForecastWeather, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = forecastWeather.time,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
+        )
+        Icon(
+            painter = painterResource(id = forecastWeather.weatherCode.getDrawable()),
+            contentDescription = "weather icon",
+            modifier = Modifier.size(48.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                text = "Max: ${forecastWeather.temperatureMax}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = "Min: ${forecastWeather.temperatureMin}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
