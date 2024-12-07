@@ -6,9 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sludd.data.CurrentWeather
+import com.example.sludd.data.WeatherInfo
 import com.example.sludd.data.WeatherRepository
-import com.example.sludd.data.toCurrentWeather
 import com.example.sludd.location.LocationProvider
 import kotlinx.coroutines.launch
 
@@ -43,9 +42,8 @@ class WeatherViewModel(
     fun updateWeather() {
         viewModelScope.launch {
             uiState = try {
-                val response = weatherRepository.getCurrentWeather(locationState.latitude, locationState.longitude)
-                val currentWeather = response.toCurrentWeather()
-                WeatherUiState.Loaded(result = currentWeather)
+                val weather = weatherRepository.getWeather(locationState.latitude, locationState.longitude)
+                WeatherUiState.Loaded(weather)
             } catch (e: Exception) {
                 Log.d("WeatherTag", "Load error: $e")
                 WeatherUiState.Error(e.message ?: "An error occurred")
@@ -57,7 +55,7 @@ class WeatherViewModel(
 data class LocationState(val latitude: Double, val longitude: Double)
 
 sealed interface WeatherUiState {
-    data class Loaded(val result: CurrentWeather?) : WeatherUiState
+    data class Loaded(val current: WeatherInfo) : WeatherUiState
     data class Error(val message: String) : WeatherUiState
     object Loading : WeatherUiState
 }

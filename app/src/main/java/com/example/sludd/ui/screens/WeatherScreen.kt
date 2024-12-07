@@ -5,18 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.sludd.R
-import com.example.sludd.data.CurrentWeather
+import com.example.sludd.data.WeatherInfo
+import com.example.sludd.ui.composables.CurrentWeatherCard
+import com.example.sludd.ui.composables.SingleDayWeatherCard
 import com.example.sludd.ui.composables.WeatherCardView
 
 @Composable
@@ -38,7 +34,7 @@ fun WeatherScreen(
         when (weatherUiState) {
             is WeatherUiState.Loading -> LoadingScreen(modifier)
             is WeatherUiState.Loaded -> ResultScreen(
-                weatherUiState.result,
+                weatherUiState.current,
                 modifier.padding(top = contentPadding.calculateTopPadding())
             )
 
@@ -48,66 +44,24 @@ fun WeatherScreen(
 }
 
 @Composable
-fun ResultScreen(weather: CurrentWeather?, modifier: Modifier = Modifier) {
-    Column (modifier = modifier) {
-        WeatherCardView {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Current Weather",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                Text(
-                    text = "Location: ${weather?.latitude ?: "N/A"}, ${weather?.longitude ?: "N/A"}",
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            id = weather?.icon ?: R.drawable.baseline_error_24
-                        ),
-                        contentDescription = "weather icon",
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Spacer(Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            text = weather?.description ?: "N/A",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Text(
-                            text = weather?.temperature ?: "N/A",
-                            style = MaterialTheme.typography.headlineMedium
-                        )
-                    }
-                }
-                Spacer(Modifier.height(16.dp))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Humidity: ${weather?.humidity ?: "N/A"}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = "Wind Speed: ${weather?.windSpeed ?: "N/A"}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Spacer(Modifier.height(16.dp))
+fun ResultScreen(
+    weather: WeatherInfo,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn (modifier = modifier) {
+        item {
+            WeatherCardView {
+                CurrentWeatherCard(weather)
+            }
+        }
+        items(weather.foreCast) { forecastWeather ->
+            WeatherCardView {
+               SingleDayWeatherCard(forecastWeather)
             }
         }
     }
 }
+
 
 @Composable
 fun ErrorScreen(modifier: Modifier, message: String) {
@@ -139,5 +93,3 @@ fun LoadingScreen(modifier: Modifier) {
         )
     }
 }
-
-
