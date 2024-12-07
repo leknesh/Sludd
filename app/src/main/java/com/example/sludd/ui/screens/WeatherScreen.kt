@@ -5,18 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,8 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.sludd.R
 import com.example.sludd.data.WeatherInfo
-import com.example.sludd.data.ForecastWeather
-import com.example.sludd.data.getDrawable
+import com.example.sludd.ui.composables.CurrentWeatherCard
+import com.example.sludd.ui.composables.SingleDayWeatherCard
 import com.example.sludd.ui.composables.WeatherCardView
 
 @Composable
@@ -54,13 +48,15 @@ fun ResultScreen(
     weather: WeatherInfo,
     modifier: Modifier = Modifier
 ) {
-    Column (modifier = modifier) {
-        WeatherCardView {
-            CurrentWeather(weather)
-        }
-        weather.foreCast.forEach {
+    LazyColumn (modifier = modifier) {
+        item {
             WeatherCardView {
-               SingleDayWeather(it)
+                CurrentWeatherCard(weather)
+            }
+        }
+        items(weather.foreCast) { forecastWeather ->
+            WeatherCardView {
+               SingleDayWeatherCard(forecastWeather)
             }
         }
     }
@@ -95,97 +91,5 @@ fun LoadingScreen(modifier: Modifier) {
             trackColor = MaterialTheme.colorScheme.surfaceVariant
 
         )
-    }
-}
-
-@Composable
-fun CurrentWeather(weather: WeatherInfo) {
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Current Weather",
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        Text(
-            text = "Location: ${weather.latitude}, ${weather.longitude}",
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 8.dp)
-        ) {
-            Icon(
-                painter = painterResource(
-                    id = weather.currentWeather.weatherCode.getDrawable()
-                ),
-                contentDescription = "weather icon",
-                modifier = Modifier.size(48.dp)
-            )
-            Spacer(Modifier.width(16.dp))
-            Column {
-                Text(
-                    text = weather.currentWeather.weatherCode.description,
-                    style = MaterialTheme.typography.labelMedium
-                )
-                Text(
-                    text = weather.currentWeather.temperature,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-            }
-        }
-        Spacer(Modifier.height(16.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "Humidity: ${weather.currentWeather.humidity}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Wind Speed: ${weather.currentWeather.windSpeed}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-        Spacer(Modifier.height(16.dp))
-    }
-}
-
-@Composable
-fun SingleDayWeather(forecastWeather: ForecastWeather, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = forecastWeather.time,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
-        )
-        Icon(
-            painter = painterResource(id = forecastWeather.weatherCode.getDrawable()),
-            contentDescription = "weather icon",
-            modifier = Modifier.size(48.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(
-            horizontalAlignment = Alignment.End
-        ) {
-            Text(
-                text = "Max: ${forecastWeather.temperatureMax}",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "Min: ${forecastWeather.temperatureMin}",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
     }
 }

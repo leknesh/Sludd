@@ -50,25 +50,10 @@ data class ForecastWeatherResponse (
 
 data class ForecastWeather(
     val time: String,
-    val temperatureMax: Double,
-    val temperatureMin: Double,
+    val temperatureMax: String,
+    val temperatureMin: String,
     val weatherCode: WeatherCode,
 )
-
-fun ForecastWeatherResponse.toForecastList(): List<ForecastWeather> {
-    val forecastList = mutableListOf<ForecastWeather>()
-    for (i in time.indices) {
-        forecastList.add(
-            ForecastWeather(
-                time = time[i],
-                weatherCode = WeatherCode.fromCode(weatherCode[i]),
-                temperatureMax = temperatureMax[i],
-                temperatureMin = temperatureMin[i]
-            )
-        )
-    }
-    return forecastList
-}
 
 data class CurrentWeather(
     val temperature: String,
@@ -93,11 +78,26 @@ fun WeatherResponse.toCurrentWeather(): CurrentWeather {
     )
 }
 
+fun WeatherResponse.toForecastList(): List<ForecastWeather> {
+    val forecastList = mutableListOf<ForecastWeather>()
+    for (i in this.daily.time.indices) {
+        forecastList.add(
+            ForecastWeather(
+                time = daily.time[i],
+                weatherCode = WeatherCode.fromCode(daily.weatherCode[i]),
+                temperatureMax = "${daily.temperatureMax[i]} ${dailyUnits.temperatureMaxUnit}",
+                temperatureMin = "${daily.temperatureMin[i]} ${dailyUnits.temperatureMinUnit}"
+            )
+        )
+    }
+    return forecastList
+}
+
 fun WeatherResponse.toWeather(): WeatherInfo {
     return WeatherInfo(
         latitude = latitude,
         longitude = longitude,
         currentWeather = this.toCurrentWeather(),
-        foreCast = daily.toForecastList()
+        foreCast = this.toForecastList()
     )
 }
