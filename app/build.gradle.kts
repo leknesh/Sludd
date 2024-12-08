@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
 android {
@@ -15,6 +23,12 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "MAPS_API_KEY",
+            localProperties.getProperty("MAPS_API_KEY")
+        )
+        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY")
     }
 
     buildTypes {
@@ -38,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -45,6 +60,7 @@ android {
 
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)
+        implementation(libs.androidx.lifecycle.runtime.compose)
         implementation(libs.androidx.activity.compose)
         implementation(platform(libs.androidx.compose.bom))
         implementation(libs.androidx.ui)
@@ -62,6 +78,9 @@ android {
         implementation(libs.accompanist.permissions)
 
         implementation(libs.koin.androidx.compose)
+
+        implementation(libs.play.services.location)
+        implementation(libs.play.services.maps)
 
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit)

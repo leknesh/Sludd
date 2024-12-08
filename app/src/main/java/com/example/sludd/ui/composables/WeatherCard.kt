@@ -10,15 +10,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.sludd.R
 import com.example.sludd.data.ForecastWeather
 import com.example.sludd.data.WeatherInfo
 import com.example.sludd.data.getDrawable
@@ -34,9 +39,9 @@ fun WeatherCardView(modifier: Modifier = Modifier, content: @Composable () -> Un
 }
 
 @Composable
-fun CurrentWeatherCard(weather: WeatherInfo) {
+fun CurrentWeatherCard(weather: WeatherInfo, placeName: String? = null, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
     ) {
         Text(
@@ -45,7 +50,11 @@ fun CurrentWeatherCard(weather: WeatherInfo) {
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Text(
-            text = "Location: ${weather.latitude}, ${weather.longitude}",
+            text = if (placeName != null) {
+                "Location: $placeName"
+            } else {
+                "Location: ${weather.latitude}, ${weather.longitude}"
+            },
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -119,6 +128,38 @@ fun SingleDayWeatherCard(forecastWeather: ForecastWeather, modifier: Modifier = 
             Text(
                 text = "Min: ${forecastWeather.temperatureMin}",
                 style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
+
+@Composable
+fun QueryCard(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val focusManager = LocalFocusManager.current
+
+    Row(modifier = modifier.padding(16.dp)) {
+        TextField(
+            value = query,
+            onValueChange = onQueryChange,
+            modifier = Modifier.weight(1f),
+            label = { Text(stringResource(R.string.search_location)) },
+            singleLine = true
+        )
+        Button(
+            onClick = {
+                focusManager.clearFocus()
+                onSearch()
+            },
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_search_24),
+                contentDescription = stringResource(R.string.search)
             )
         }
     }

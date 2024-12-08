@@ -8,12 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sludd.data.WeatherInfo
 import com.example.sludd.data.WeatherRepository
+import com.example.sludd.location.GeocoderService
 import com.example.sludd.location.LocationProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
     private val weatherRepository: WeatherRepository,
-    private val locationProvider: LocationProvider
+    private val locationProvider: LocationProvider,
+    private val geocoderService: GeocoderService
 ) : ViewModel() {
 
     private val osloLat = 59.91
@@ -26,6 +30,9 @@ class WeatherViewModel(
     var locationState: LocationState by mutableStateOf(LocationState(osloLat, osloLong))
         private set
 
+    private val _placeNameState = MutableStateFlow("")
+    val placeNameState: StateFlow<String> get() = _placeNameState
+
     fun updateLocation() {
         viewModelScope.launch {
             try {
@@ -35,6 +42,21 @@ class WeatherViewModel(
                 }
             } catch (e: Exception) {
                 Log.d("WeatherTag", "Location error: $e")
+            }
+        }
+    }
+
+    fun searchLocation(query: String) {
+        viewModelScope.launch {
+            try {
+                val address = geocoderService.getAddress(query)
+                if (address != null) {
+                    locationState = LocationState(address.latitude, address.longitude)
+                    _placeNameState.value = address.getAddressLine(0)
+                    updateWeather()
+                }
+            } catch (e: Exception) {
+                Log.d("WeatherTag", "Search error: $e")
             }
         }
     }

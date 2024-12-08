@@ -32,7 +32,13 @@ Sludd is a weather application built using Kotlin and Jetpack Compose. It fetche
     git clone https://github.com/leknesh/sludd-weather-app.git
     ```
 2. Open the project in Android Studio.
-3. Build and run the app on an Android device or emulator.
+3. Create a `local.properties` file in the root directory of the project and add your API key:
+    ```properties
+    MAPS_API_KEY=your_api_key_here
+    ```
+   You can get your Google Maps API key from the [Google Cloud Console](https://console.cloud.google.com/).
+
+4. Build and run the app on an Android device or emulator.
 
 ## Usage
 
