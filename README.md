@@ -40,6 +40,10 @@ Sludd is a weather application built using Kotlin and Jetpack Compose. It fetche
 
 4. Build and run the app on an Android device or emulator.
 
+### Troubleshooting
+Make sure your API key has the `Maps SDK for Android` enabled.
+In case of issues with the API key setup, a version of the app without search functionality is available in the branch `Sludd_103_forecast`.
+
 ## Usage
 
 1. Grant location permissions when prompted.
