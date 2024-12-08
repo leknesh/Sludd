@@ -28,6 +28,7 @@ android {
             "MAPS_API_KEY",
             localProperties.getProperty("MAPS_API_KEY")
         )
+        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY")
     }
 
     buildTypes {
@@ -59,6 +60,7 @@ android {
 
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)
+        implementation(libs.androidx.lifecycle.runtime.compose)
         implementation(libs.androidx.activity.compose)
         implementation(platform(libs.androidx.compose.bom))
         implementation(libs.androidx.ui)
@@ -76,6 +78,9 @@ android {
         implementation(libs.accompanist.permissions)
 
         implementation(libs.koin.androidx.compose)
+
+        implementation(libs.play.services.location)
+        implementation(libs.play.services.maps)
 
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit)

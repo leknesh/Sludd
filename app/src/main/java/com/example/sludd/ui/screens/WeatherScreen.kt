@@ -14,6 +14,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,20 +25,29 @@ import androidx.compose.ui.unit.dp
 import com.example.sludd.R
 import com.example.sludd.data.WeatherInfo
 import com.example.sludd.ui.composables.CurrentWeatherCard
+import com.example.sludd.ui.composables.QueryCard
 import com.example.sludd.ui.composables.SingleDayWeatherCard
 import com.example.sludd.ui.composables.WeatherCardView
 
 @Composable
 fun WeatherScreen(
     weatherUiState: WeatherUiState,
+    onSearch: (String) -> Unit,
+    placeName: String? = null,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
+    var query by rememberSaveable { mutableStateOf("") }
+
     Box(modifier = modifier.fillMaxSize()) {
         when (weatherUiState) {
             is WeatherUiState.Loading -> LoadingScreen(modifier)
             is WeatherUiState.Loaded -> ResultScreen(
                 weatherUiState.current,
+                query,
+                placeName,
+                onQueryChange = { query = it },
+                onSearch = { onSearch(query) },
                 modifier.padding(top = contentPadding.calculateTopPadding())
             )
 
@@ -46,12 +59,21 @@ fun WeatherScreen(
 @Composable
 fun ResultScreen(
     weather: WeatherInfo,
+    query: String,
+    placeName: String?,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn (modifier = modifier) {
         item {
             WeatherCardView {
-                CurrentWeatherCard(weather)
+                QueryCard(query, onQueryChange, onSearch)
+            }
+        }
+        item {
+            WeatherCardView {
+                CurrentWeatherCard(weather, placeName)
             }
         }
         items(weather.foreCast) { forecastWeather ->

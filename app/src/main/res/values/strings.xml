@@ -4,4 +4,6 @@
     <string name="current_weather">Current weather\n</string>
     <string name="permission_required">Permission Required</string>
     <string name="location_permission_required_long">Location permission is required to fetch weather information.</string>
+    <string name="search_location">Search Location</string>
+    <string name="search">Search</string>
 </resources>
